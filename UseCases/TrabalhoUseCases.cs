@@ -95,6 +95,7 @@ public class TrabalhoUseCases(
             };
         }
         Empresa empresa = empresaResult.Entidades.First();
+
         Result<Terminal> terminalSaidaResult = await terminalReadRepository.ObterPorIdAsync(terminalSaidaId);
         if (terminalSaidaResult.Entidades == null || terminalSaidaResult.Entidades.Count() <= 0)
         {
@@ -109,6 +110,7 @@ public class TrabalhoUseCases(
             };
         }
         Terminal terminalSaida = terminalSaidaResult.Entidades.First();
+
         Result<Terminal> terminalEntregaResult = await terminalReadRepository.ObterPorIdAsync(terminalEntregaId);
         if (terminalEntregaResult.Entidades == null || terminalEntregaResult.Entidades.Count() <= 0)
         {
@@ -122,6 +124,10 @@ public class TrabalhoUseCases(
                 }
             };
         }
+        Terminal terminalEntrega = terminalEntregaResult.Entidades.First();
+
+
+        trabalho.AtualizarTrabalho(empresa, terminalSaida, terminalEntrega, valor);
 
         return await trabalhoWriteRepository.UpdateAsync(trabalho);
     }

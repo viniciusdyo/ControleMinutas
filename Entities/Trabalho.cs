@@ -24,4 +24,12 @@ public class Trabalho : EntidadeBase
     {
         return new Trabalho(empresa.Id, saida.Id, entrega.Id, valor);
     }
+
+    public void AtualizarTrabalho(Empresa empresa, Terminal saida, Terminal entrega, decimal valor)
+    {
+        EmpresaId = empresa.Id;
+        SaidaId = saida.Id;
+        EntregaId = entrega.Id;
+        Valor = valor;
+    }
 }

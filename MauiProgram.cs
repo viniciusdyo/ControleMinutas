@@ -40,9 +40,6 @@ public static class MauiProgram
         builder.Services.AddTransient<UseCases.TrabalhoUseCases>();
         builder.Services.AddTransient<UseCases.MinutaUseCases>();
 
-
-
-
         var app = builder.Build();
 
         using (var scope = app.Services.CreateScope())
