@@ -37,7 +37,7 @@ public class Minuta : EntidadeBase
         switch (status)
         {
             case Status.Trocada:
-                if (trabalho.Entrega != null && trabalho.Empresa != null && trabalho.Empresa.TaxaTroca > 0) // Exemplo de condição
+                if (trabalho.Entrega != null && trabalho.Empresa != null && trabalho.Empresa.TaxaTroca > 0)
                 {
                     valorMinuta *= trabalho.Empresa.TaxaTroca;
                 }
@@ -58,6 +58,7 @@ public class Minuta : EntidadeBase
 
 public enum Status
 {
+    EmMaos,
     Entregue,
     Trocada,
     Abastecimento,
