@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ControleMinutas.Database.Repositories;
+using ControleMinutas.Interfaces.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ControleMinutas;
@@ -24,6 +26,11 @@ public static class MauiProgram
         string dbPath = Path.Combine(FileSystem.AppDataDirectory, "ControleMinutas.db");
 
         builder.Services.AddDbContext<Database.AppDbContext>(options => options.UseSqlite($"Data Source={dbPath}"));
+
+        builder.Services.AddTransient<IReadRepository, ReadRepository>();
+        builder.Services.AddTransient<IWriteRepository, WriteRepository>();
+
+
 
         var app = builder.Build();
 

@@ -2,29 +2,27 @@
 using ControleMinutas.Entities;
 using ControleMinutas.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ControleMinutas.Database.Repositories;
 
 public class ReadRepository(AppDbContext context) : IReadRepository
 {
-    public async Task<Result<T>> GetAllAsync<T>() where T : EntidadeBase
+    public async Task<Result<T>> ObterTodosAsync<T>(params Expression<Func<T, object>>[] includes) where T : EntidadeBase
     {
         try
         {
-            List<T> entidades = await context.Set<T>().ToListAsync<T>();
+            IQueryable<T> query = context.Set<T>();
 
-            if (!entidades.Any())
+            if (includes != null)
             {
-                return new Result<T>
+                foreach (var include in includes)
                 {
-                    Entidades = null,
-                    Success = false,
-                    Erros = new List<Erro>
-                    {
-                         new Erro("Nenhuma item encontrada.", "404")
-                    }
-                };
+                    query = query.Include(include);
+                }
             }
+
+            List<T> entidades = await query.ToListAsync();
 
             return new Result<T>
             {
@@ -49,11 +47,21 @@ public class ReadRepository(AppDbContext context) : IReadRepository
         }
     }
 
-    public async Task<Result<T>> GetByIdAsync<T>(int id) where T : EntidadeBase
+    public async Task<Result<T>> ObterPorIdAsync<T>(int id, params Expression<Func<T, object>>[] includes) where T : EntidadeBase
     {
         try
         {
-            T? entidade = await context.Set<T>().FirstOrDefaultAsync(e => e.Id == id);
+            IQueryable<T> query = context.Set<T>();
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            T? entidade = await query.FirstOrDefaultAsync(e => e.Id == id);
 
             if (entidade == null)
             {
