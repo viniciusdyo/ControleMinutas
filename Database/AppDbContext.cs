@@ -20,4 +20,22 @@ public class AppDbContext : DbContext
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var entries = ChangeTracker.Entries<EntidadeBase>();
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CriadoEm = DateTime.UtcNow;
+                entry.Entity.EditadoEm = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.EditadoEm = DateTime.UtcNow;
+            }
+        }
+        return base.SaveChangesAsync(cancellationToken);
+    }
 }
