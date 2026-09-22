@@ -1,0 +1,28 @@
+@inherits InputBase<string>
+
+<div class="input-group">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="form-label">@Label</label>
+    }
+    <input @bind="CurrentValueAsString" class="form-control @CssClass"
+           @attributes="AdditionalAttributes"
+           @oninput="HandleInput" />
+
+    <div class="invalid-feedback">
+        <ValidationMessage For="@ValueExpression" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public EventCallback<string> OnInputChanged { get; set; }
+    [Parameter]
+    public RenderFragment? Button { get; set; }
+
+        private async Task HandleInput(ChangeEventArgs e)
+    {
+        CurrentValueAsString = e.Value?.ToString();
+        await OnInputChanged.InvokeAsync(CurrentValue);
+    }
+}

@@ -1,0 +1,40 @@
+@if(Mostrar) 
+{
+    <div>
+        <div class="modal-backdrop fade show"></div>
+        <div class="modal d-block" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal</h5>
+                        <button type="button" class="btn-close" aria-label="Close" @onclick="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        @ConteudoCorpo
+                    </div>
+                    @ConteudoFooter
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Mostrar { get; set; }
+    
+    [Parameter]
+    public RenderFragment? ConteudoCorpo { get; set; }
+    
+    [Parameter]
+    public RenderFragment? ConteudoFooter { get; set; }
+
+    [Parameter]
+    public EventCallback AoFechar { get; set; }
+
+    private async Task Fechar()
+    {
+        Mostrar = false;
+        await AoFechar.InvokeAsync();
+    }
+}
