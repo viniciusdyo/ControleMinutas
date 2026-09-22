@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControleMinutas.Database.Repositories;
 
-public class WriteRepository(AppDbContext context) : IWriteRepository
+public class WriteRepository<T>(AppDbContext context) : IWriteRepository<T> where T : EntidadeBase
 {
-    public async Task<Result<T>> AddAsync<T>(T entity) where T : EntidadeBase
+    public async Task<Result<T>> AddAsync(T entity)
     {
         try
         {
@@ -32,11 +32,11 @@ public class WriteRepository(AppDbContext context) : IWriteRepository
         }
     }
 
-    public async Task<Result<T>> DeleteAsync<T>(int id) where T : EntidadeBase
+    public async Task<Result<T>> DeleteAsync(int id)
     {
         try
         {
-            await context.Set<T>().Where(x => x.Id == id).ExecuteDeleteAsync<T>();
+            await context.Set<T>().Where(x => x.Id == id).ExecuteDeleteAsync();
             return new Result<T>
             {
                 Entidades = null,
@@ -55,11 +55,11 @@ public class WriteRepository(AppDbContext context) : IWriteRepository
         }
     }
 
-    public async Task<Result<T>> UpdateAsync<T>(T entity) where T : EntidadeBase
+    public async Task<Result<T>> UpdateAsync(T entity)
     {
         try
         {
-            await context.Set<T>().Where(x => x.Id == entity.Id).ExecuteUpdateAsync<T>(x => x.SetProperty(e => e, entity));
+            await context.Set<T>().Where(x => x.Id == entity.Id).ExecuteUpdateAsync(x => x.SetProperty(e => e, entity));
             await context.SaveChangesAsync();
 
             return new Result<T>

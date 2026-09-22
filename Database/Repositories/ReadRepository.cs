@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 
 namespace ControleMinutas.Database.Repositories;
 
-public class ReadRepository(AppDbContext context) : IReadRepository
+public class ReadRepository<T>(AppDbContext context) : IReadRepository<T> where T : EntidadeBase
 {
-    public async Task<Result<T>> ObterTodosAsync<T>(params Expression<Func<T, object>>[] includes) where T : EntidadeBase
+    public async Task<Result<T>> ObterTodosAsync(params Expression<Func<T, object>>[] includes)
     {
         try
         {
@@ -47,7 +47,7 @@ public class ReadRepository(AppDbContext context) : IReadRepository
         }
     }
 
-    public async Task<Result<T>> ObterPorIdAsync<T>(int id, params Expression<Func<T, object>>[] includes) where T : EntidadeBase
+    public async Task<Result<T>> ObterPorIdAsync(int id, params Expression<Func<T, object>>[] includes)
     {
         try
         {

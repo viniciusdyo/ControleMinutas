@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 
 namespace ControleMinutas.Interfaces.Repositories;
 
-public interface IReadRepository
+public interface IReadRepository<T> where T : EntidadeBase
 {
-    Task<Result<T>> ObterTodosAsync<T>(params Expression<Func<T, object>>[] includes) where T : EntidadeBase;
-    Task<Result<T>> ObterPorIdAsync<T>(int id, params Expression<Func<T, object>>[] includes) where T : EntidadeBase;
+    Task<Result<T>> ObterTodosAsync(params Expression<Func<T, object>>[] includes);
+    Task<Result<T>> ObterPorIdAsync(int id, params Expression<Func<T, object>>[] includes);
 }
