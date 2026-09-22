@@ -4,16 +4,30 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ControleMinutas.Database.Configuration;
 
-public class MinutaConfiguration : IEntityTypeConfiguration<Minuta>
+public abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T> where T : EntidadeBase
 {
-    public void Configure(EntityTypeBuilder<Minuta> builder)
+    public virtual void Configure(EntityTypeBuilder<T> builder)
     {
-        builder.ToTable("Minutas");
-
-        builder.HasKey(m => m.Id);
-
-        builder.Property(m => m.Id)
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
             .ValueGeneratedOnAdd();
+
+        builder.Property(e => e.CriadoEm)
+            .IsRequired();
+        builder.Property(e => e.EditadoEm)
+            .IsRequired();
+
+        builder.HasIndex(e => e.CriadoEm);
+        builder.HasIndex(e => e.EditadoEm);
+    }
+}
+
+public class MinutaConfiguration : BaseEntityConfiguration<Minuta>
+{
+    public override void Configure(EntityTypeBuilder<Minuta> builder)
+    {
+        base.Configure(builder);
+        builder.ToTable("Minutas");
 
         builder.Property(m => m.Status)
             .HasConversion<string>()
@@ -37,20 +51,17 @@ public class MinutaConfiguration : IEntityTypeConfiguration<Minuta>
             .HasColumnType("TEXT")
             .IsRequired();
 
-        builder.HasIndex(m => new { m.TrabalhoId, m.Data, m.Status });
+        builder.HasIndex(m => m.Data);
+        builder.HasIndex(m => m.Status);
     }
 }
 
-public class TrabalhoConfiguration : IEntityTypeConfiguration<Trabalho>
+public class TrabalhoConfiguration : BaseEntityConfiguration<Trabalho>
 {
-    public void Configure(EntityTypeBuilder<Trabalho> builder)
+    public override void Configure(EntityTypeBuilder<Trabalho> builder)
     {
+        base.Configure(builder);
         builder.ToTable("Trabalhos");
-
-        builder.HasKey(t => t.Id);
-
-        builder.Property(t => t.Id)
-            .ValueGeneratedOnAdd();
 
         builder.Property(t => t.Valor)
             .HasColumnType("TEXT")
@@ -73,16 +84,12 @@ public class TrabalhoConfiguration : IEntityTypeConfiguration<Trabalho>
     }
 }
 
-public class EmpresaConfiguration : IEntityTypeConfiguration<Empresa>
+public class EmpresaConfiguration : BaseEntityConfiguration<Empresa>
 {
-    public void Configure(EntityTypeBuilder<Empresa> builder)
+    public override void Configure(EntityTypeBuilder<Empresa> builder)
     {
+        base.Configure(builder);
         builder.ToTable("Empresas");
-
-        builder.HasKey(e => e.Id);
-
-        builder.Property(e => e.Id)
-            .ValueGeneratedOnAdd();
 
         builder.Property(e => e.Nome)
             .IsRequired();
@@ -94,18 +101,17 @@ public class EmpresaConfiguration : IEntityTypeConfiguration<Empresa>
         builder.Property(e => e.TaxaAbastecimento)
             .HasColumnType("TEXT")
             .IsRequired();
+
+        builder.HasIndex(e => e.Nome).IsUnique();
     }
 }
 
-public class TerminalConfiguration : IEntityTypeConfiguration<Terminal>
+public class TerminalConfiguration : BaseEntityConfiguration<Terminal>
 {
-    public void Configure(EntityTypeBuilder<Terminal> builder)
+    public override void Configure(EntityTypeBuilder<Terminal> builder)
     {
-        builder.ToTable("Terminais");
-        
-        builder.HasKey(e => e.Id);
-        
-        builder.Property(e => e.Id).ValueGeneratedOnAdd();
+        base.Configure(builder);
+        builder.ToTable("Terminais");        
 
         builder.Property(e => e.Nome)
             .IsRequired();
