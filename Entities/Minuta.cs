@@ -27,6 +27,17 @@ public class Minuta : EntidadeBase
         return new Minuta(trabalho, data, status, valor, valorTotal);
     }
 
+    public void AtualizarMinuta(Status status, Trabalho trabalho)
+    {
+        if (trabalho == null || trabalho.Valor <= 0)
+        {
+            throw new InvalidOperationException("O trabalho não está definido ou o valor do trabalho é inválido.");
+        }
+        Status = status;
+        Valor = CalcularValorMinuta(trabalho, status);
+        ValorTotal = Valor;
+    }
+
     private static decimal CalcularValorMinuta(Trabalho trabalho, Status status)
     {
         if (trabalho == null || trabalho.Valor <= 0)

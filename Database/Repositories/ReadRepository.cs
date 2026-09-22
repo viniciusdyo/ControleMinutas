@@ -97,4 +97,56 @@ public class ReadRepository<T>(AppDbContext context) : IReadRepository<T> where 
             };
         }
     }
+
+    public async Task<Result<T>> ObterPorCondicaoAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+    {
+        try
+        {
+            IQueryable<T> query = context.Set<T>();
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            List<T> entidades = await query.Where(predicate).ToListAsync();
+
+            if (!entidades.Any())
+            {
+
+                return new Result<T>
+                {
+                    Entidades = null,
+                    Success = false,
+                    Erros = new List<Erro>
+                    {
+                        new Erro($"Nenhum item encontrado para os filtros especificados.", "404")
+                    }
+                };
+            }
+
+            return new Result<T>
+            {
+                Entidades = entidades,
+                Success = true,
+                Erros = new List<Erro>()
+            };
+        }
+        catch (Exception)
+        {
+
+            return new Result<T>
+            {
+                Entidades = null,
+                Success = false,
+                Erros = new List<Erro>
+                {
+                    new Erro($"Ocorreu um erro ao tentar obter os itens.", "500")
+                }
+            };
+        }
+    }
 }
