@@ -15,7 +15,7 @@ public class TrabalhoUseCases(
     public async Task<Result<Trabalho>> CriarTrabalhoAsync(int empresaId, int terminalSaidaId, int terminalEntregaId, decimal valor)
     {
         Result<Empresa> empresaResult = await empresaReadRepository.ObterPorIdAsync(empresaId);
-        if (empresaResult.Entidades == null || empresaResult.Entidades.Count() <= 0)
+        if (empresaResult.Entidades == null || !empresaResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -31,7 +31,7 @@ public class TrabalhoUseCases(
         Empresa empresa = empresaResult.Entidades.First();
 
         Result<Terminal> terminalSaidaResult = await terminalReadRepository.ObterPorIdAsync(terminalSaidaId);
-        if (terminalSaidaResult.Entidades == null || terminalSaidaResult.Entidades.Count() <= 0)
+        if (terminalSaidaResult.Entidades == null || !terminalSaidaResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -47,7 +47,7 @@ public class TrabalhoUseCases(
         Terminal terminalSaida = terminalSaidaResult.Entidades.First();
         Result<Terminal> terminalEntregaResult = await terminalReadRepository.ObterPorIdAsync(terminalEntregaId);
 
-        if (terminalEntregaResult.Entidades == null || terminalEntregaResult.Entidades.Count() <= 0)
+        if (terminalEntregaResult.Entidades == null || !terminalEntregaResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -68,7 +68,7 @@ public class TrabalhoUseCases(
     public async Task<Result<Trabalho>> AtualizarTrabalhoAsync(int trabalhoId, int empresaId, int terminalSaidaId, int terminalEntregaId, decimal valor)
     {
         Result<Trabalho> trabalhoResult = await trabalhoReadRepository.ObterPorIdAsync(trabalhoId);
-        if (trabalhoResult.Entidades == null || trabalhoResult.Entidades.Count() <= 0)
+        if (trabalhoResult.Entidades == null || !trabalhoResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -82,7 +82,7 @@ public class TrabalhoUseCases(
         }
         Trabalho trabalho = trabalhoResult.Entidades.First();
         Result<Empresa> empresaResult = await empresaReadRepository.ObterPorIdAsync(empresaId);
-        if (empresaResult.Entidades == null || empresaResult.Entidades.Count() <= 0)
+        if (empresaResult.Entidades == null || !empresaResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -97,7 +97,7 @@ public class TrabalhoUseCases(
         Empresa empresa = empresaResult.Entidades.First();
 
         Result<Terminal> terminalSaidaResult = await terminalReadRepository.ObterPorIdAsync(terminalSaidaId);
-        if (terminalSaidaResult.Entidades == null || terminalSaidaResult.Entidades.Count() <= 0)
+        if (terminalSaidaResult.Entidades == null || !terminalSaidaResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -112,7 +112,7 @@ public class TrabalhoUseCases(
         Terminal terminalSaida = terminalSaidaResult.Entidades.First();
 
         Result<Terminal> terminalEntregaResult = await terminalReadRepository.ObterPorIdAsync(terminalEntregaId);
-        if (terminalEntregaResult.Entidades == null || terminalEntregaResult.Entidades.Count() <= 0)
+        if (terminalEntregaResult.Entidades == null || !terminalEntregaResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {
@@ -136,7 +136,7 @@ public class TrabalhoUseCases(
     public async Task<Result<Trabalho>> ExcluirTrabalhoAsync(int trabalhoId)
     {
         Result<Trabalho> trabalhoResult = await trabalhoReadRepository.ObterPorIdAsync(trabalhoId);
-        if (trabalhoResult.Entidades == null || trabalhoResult.Entidades.Count() <= 0)
+        if (trabalhoResult.Entidades == null || !trabalhoResult.Entidades.Any())
         {
             return new Result<Trabalho>
             {

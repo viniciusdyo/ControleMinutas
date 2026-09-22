@@ -15,7 +15,7 @@ public class MinutaUseCases(
     {
         Result<Trabalho> trabalhoResult = await trabalhoReadRepository.ObterPorIdAsync(TrabalhoId, t => t.Empresa!, t => t.Saida!, t => t.Entrega!);
 
-        if (trabalhoResult.Entidades == null || trabalhoResult.Entidades.Count() <= 0)
+        if (trabalhoResult.Entidades == null || !trabalhoResult.Entidades.Any())
         {
             return new Result<Minuta>
             {
@@ -37,7 +37,7 @@ public class MinutaUseCases(
     public async Task<Result<Minuta>> AtualizarMinutaAsync(int minutaId, Status status, int trabalhoId)
     {
         Result<Minuta> minutaResult = await minutaReadRepository.ObterPorIdAsync(minutaId);
-        if (minutaResult.Entidades == null || minutaResult.Entidades.Count() <= 0)
+        if (minutaResult.Entidades == null || !minutaResult.Entidades.Any())
         {
             return new Result<Minuta>
             {
@@ -51,7 +51,7 @@ public class MinutaUseCases(
         }
         Minuta minuta = minutaResult.Entidades.First();
         Result<Trabalho> trabalhoResult = await trabalhoReadRepository.ObterPorIdAsync(trabalhoId);
-        if (trabalhoResult.Entidades == null || trabalhoResult.Entidades.Count() <= 0)
+        if (trabalhoResult.Entidades == null || !trabalhoResult.Entidades.Any())
         {
             return new Result<Minuta>
             {
@@ -72,7 +72,7 @@ public class MinutaUseCases(
     public async Task<Result<Minuta>> ExcluirMinutaAsync(int minutaId)
     {
         Result<Minuta> minutaResult = await minutaReadRepository.ObterPorIdAsync(minutaId);
-        if (minutaResult.Entidades == null || minutaResult.Entidades.Count() <= 0)
+        if (minutaResult.Entidades == null || !minutaResult.Entidades.Any())
         {
             return new Result<Minuta>
             {
