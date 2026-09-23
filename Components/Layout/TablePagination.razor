@@ -12,7 +12,6 @@
             </tr>
         </thead>
         <tbody>
-
             @if (Itens == null || !Itens.Any())
             {
                 <tr>
@@ -25,18 +24,39 @@
                 {
                     <tr>
                         @Linha(item)
-                        if (MostrarAcoes)
+                        @if (MostrarAcoes)
                         {
-                        <td>
-                            <button class="btn btn-sm btn-primary me-2" title="Editar" @onclick="() => AoEditar.InvokeAsync(item)">✏️</button>
-                            <button class="btn btn-sm btn-danger" title="Excluir" @onclick="() => AoExcluir.InvokeAsync(item)">🗑️</button>
-                        </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-2" title="Editar" @onclick="() => AoEditar.InvokeAsync(item)">✏️</button>
+                                <button class="btn btn-sm btn-danger" title="Excluir" @onclick="() => AoExcluir.InvokeAsync(item)">🗑️</button>
+                            </td>
                         }
                     </tr>
                 }
             }
         </tbody>
     </table>
+
+    @if (TotalPaginas > 1)
+    {
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(PaginaAtual == 1 ? "disabled" : "")">
+                    <button class="page-link" @onclick="PaginaAnterior">Anterior</button>
+                </li>
+                @for (int i = 1; i <= TotalPaginas; i++)
+                {
+                    var pagina = i;
+                    <li class="page-link @(PaginaAtual == pagina ? "disabled" : "")" @onclick="() => MudarPagina(pagina)">
+                        @pagina
+                    </li>
+                }
+                <li class="page-item @(PaginaAtual == TotalPaginas ? "disabled" : "")">
+                    <button class="page-link" @onclick="ProximaPagina">Próxima</button>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
 
 @code {

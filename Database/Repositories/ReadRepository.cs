@@ -150,7 +150,7 @@ public class ReadRepository<T>(AppDbContext context) : IReadRepository<T> where 
         }
     }
 
-    public async Task<PagedResult<T>> ObterPaginadoAsync(int pagina, int tamanhoPagina, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[] includes)
+    public async Task<PagedResult<T>> ObterPaginadoAsync(int pagina, int tamanhoPagina, Expression<Func<T, bool>>? predicates, Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy, params Expression<Func<T, object>>[] includes)
     {
         try
         {
@@ -164,13 +164,21 @@ public class ReadRepository<T>(AppDbContext context) : IReadRepository<T> where 
                 }
             }
 
-            if (predicate != null)
+            if (predicates != null)
             {
-                query = query.Where(predicate);
+                query = query.Where(predicates);
             }
 
             int totalRegistros = await query.CountAsync();
             int totalPaginas = (int)Math.Ceiling(totalRegistros / (double)tamanhoPagina);
+
+            if(orderBy != null)
+            {
+                query = orderBy(query);
+            } else
+            {
+                query = query.OrderBy(e => e.Id);
+            }
 
             List<T> entidades = await query.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToListAsync();
 
@@ -180,7 +188,9 @@ public class ReadRepository<T>(AppDbContext context) : IReadRepository<T> where 
                 TotalRegistros = totalRegistros,
                 TotalPaginas = totalPaginas,
                 PaginaAtual = pagina,
-                TamanhoPagina = tamanhoPagina
+                TamanhoPagina = tamanhoPagina,
+                Success = true,
+                Erros = new List<Erro>()
             };
         }
         catch (Exception)

@@ -5,6 +5,7 @@
 @using ControleMinutas.Interfaces.Repositories
 
 @inject IWriteRepository<Empresa> EmpresaRepository;
+@inject IReadRepository<Empresa> EmpresaReadRepository;
 
 <h3>Minutas</h3>
 
@@ -14,6 +15,39 @@
 <button class="btn btn-primary" @onclick="MostrarModalEmpresaHandle">
     Abrir Empresa Modal
 </button>
+
+<TablePagination TItem="Empresa"
+                 Itens="empresas"
+                 MostrarAcoes="true"
+                 AoEditar="@EditarEmpresa"
+                 AoExcluir="@ExcluirEmpresa"
+                 AoMudarPagina="@CarregarEmpresas">
+    <Cabecalho>
+        <th>
+            ID
+        </th>
+        <th>
+            Nome da Empresa
+        </th>
+        <th>
+            Taxa de Abastecimento
+        </th>
+        <th>
+            Taxa de Troca
+        </th>
+    </Cabecalho>
+
+    <Linha Context="empresa">
+        <td>@empresa.Id</td>
+        <td>@empresa.Nome</td>
+        <td>@empresa.TaxaAbastecimento</td>
+        <td>@empresa.TaxaTroca</td>
+    </Linha>
+
+</TablePagination>
+
+
+
 
 <Modal Mostrar="@MostrarEmpresaModal"
        AoFechar="@FecharEmpresaModal">
@@ -68,6 +102,44 @@
 </Modal>
 
 @code {
+
+    private List<Empresa> empresas = new List<Empresa>();
+    private int paginaAtual = 1;
+    private int totalPaginas = 1;
+    private int tamanhoPagina = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarEmpresas(1);
+    }
+
+
+    private async Task CarregarEmpresas(int novaPagina)
+    {
+        paginaAtual = novaPagina;
+        PagedResult<Empresa> resultadoPaginado = await EmpresaReadRepository.ObterPaginadoAsync(
+            paginaAtual,
+            tamanhoPagina,
+            null,
+            null
+        );
+
+        if (resultadoPaginado.Success)
+        {
+            empresas = resultadoPaginado.Entidades?.ToList() ?? new List<Empresa>();
+            totalPaginas = ((dynamic)resultadoPaginado).TotalPaginas;
+        }
+    }
+
+    private void EditarEmpresa()
+    {
+
+    }
+
+    private void ExcluirEmpresa()
+    {
+
+    }
 
     private MinutaModel modeloMinuta = new MinutaModel();
     private EmpresaModel modeloEmpresa = new EmpresaModel();
