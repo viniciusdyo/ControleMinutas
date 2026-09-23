@@ -1,7 +1,60 @@
 ﻿@page "/minutas"
+@using ControleMinutas.DTOs
 
 <h3>Minutas</h3>
 
+<button class="btn btn-primary" @onclick="MostrarModalHandle">
+    Abrir Modal
+</button>
+
+<Modal 
+    Mostrar="@MostrarModal" 
+    AoFechar="@FecharModal"
+>
+    <ConteudoCorpo>
+        <Form TModel="MinutaModel"
+              Model="modeloMinuta"
+              AoSalvar="@Salvar"
+              AoCancelar="@FecharModal"
+              Carregando="@Carregando"
+              MostrarBotaoCancelar="@MostrarBotaoCancelar"
+              TextoBotaoCancelar="Cancelar"
+              TextoBotaoSalvar="Salvar"
+        >
+
+            <InputCurrency Label="Valor" @bind-Value="modeloMinuta.Valor" />
+        </Form>
+    </ConteudoCorpo>
+    <ConteudoFooter>
+        <button class="btn btn-secondary" @onclick="FecharModal">Fechar</button>
+    </ConteudoFooter>
+</Modal>
+
 @code {
+
+    private MinutaModel modeloMinuta = new MinutaModel();
+    private bool Carregando { get; set; } = false;
+    private bool MostrarBotaoCancelar { get; set; } = true;
+
+
+    private bool MostrarModal { get; set; } = false;
+
+    private async Task Salvar(MinutaModel model)
+    {
+        Carregando = true;
+        await Task.Delay(2000);
+        Carregando = false;
+        FecharModal();
+    }
+
+    private void MostrarModalHandle()
+    {
+        MostrarModal = true;
+    }
+    private void FecharModal()
+    {
+        MostrarModal = false;
+        modeloMinuta = new MinutaModel();
+    }
 
 }

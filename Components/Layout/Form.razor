@@ -17,8 +17,8 @@
             </button>    
         }
 
-        <button type="submit">
-            if(Carregando)
+        <button type="submit" class="btn btn-primary">
+            @if(Carregando)
             {
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span class="sr-only">Carregando...</span>
@@ -36,15 +36,12 @@
     public TModel Model { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<TModel> OnValidSubmit { get; set; }
-
-    [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public EventCallback<TModel> AoSalvar { get; set; }
 
-        [Parameter]
+    [Parameter]
     public EventCallback AoCancelar { get; set; }
 
     [Parameter]
@@ -59,8 +56,8 @@
     [Parameter]
     public bool Carregando { get; set; } = false;
 
-    private async Task ProcessarSalvamento()
+    private async Task ProcessarSalvamento(EditContext editContext)
     {
-        await OnValidSubmit.InvokeAsync(Model);
+        await AoSalvar.InvokeAsync(Model);
     }
 }
