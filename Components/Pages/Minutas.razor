@@ -3,24 +3,29 @@
 
 <h3>Minutas</h3>
 
-<button class="btn btn-primary" @onclick="MostrarModalHandle">
+<button class="btn btn-primary" @onclick="MostrarModalMinutaHandle">
     Abrir Modal
 </button>
 
-<Modal 
-    Mostrar="@MostrarModal" 
-    AoFechar="@FecharModal"
->
+<Modal Mostrar="@MostrarMinutaModal"
+       AoFechar="@FecharMinutaModal">
+
+   
+</Modal>
+
+
+
+<Modal Mostrar="@MostrarMinutaModal"
+       AoFechar="@FecharMinutaModal">
     <ConteudoCorpo>
         <Form TModel="MinutaModel"
               Model="modeloMinuta"
               AoSalvar="@Salvar"
-              AoCancelar="@FecharModal"
+              AoCancelar="@FecharMinutaModal"
               Carregando="@Carregando"
               MostrarBotaoCancelar="@MostrarBotaoCancelar"
               TextoBotaoCancelar="Cancelar"
-              TextoBotaoSalvar="Salvar"
-        >
+              TextoBotaoSalvar="Salvar">
 
             <InputCurrency Label="Valor" @bind-Value="modeloMinuta.Valor" />
             <SelectRegistration TValue="string" Label="Terminal Saída" AoAdicionarNovoValor="@AdicionarNovoStatus" @bind-Value="modeloMinuta.Status">
@@ -33,7 +38,7 @@
         </Form>
     </ConteudoCorpo>
     <ConteudoFooter>
-        <button class="btn btn-secondary" @onclick="FecharModal">Fechar</button>
+        <button class="btn btn-secondary" @onclick="FecharMinutaModal">Fechar</button>
     </ConteudoFooter>
 </Modal>
 
@@ -54,24 +59,36 @@
         }
     }
 
-    private bool MostrarModal { get; set; } = false;
+    private bool MostrarMinutaModal { get; set; } = false;
+    private bool MostrarEmpresaModal { get; set; } = false;
 
     private async Task Salvar(MinutaModel model)
     {
         Carregando = true;
         await Task.Delay(2000);
         Carregando = false;
-        FecharModal();
+        FecharMinutaModal();
     }
 
-    private void MostrarModalHandle()
+    private void MostrarModalMinutaHandle()
     {
-        MostrarModal = true;
+        MostrarMinutaModal = true;
     }
-    private void FecharModal()
+
+    private void FecharMinutaModal()
     {
-        MostrarModal = false;
+        MostrarMinutaModal = false;
         modeloMinuta = new MinutaModel();
+    }
+
+    private void MostrarModalEmpresaHandle()
+    {
+        MostrarEmpresaModal = true;
+    }
+
+    private void FecharEmpresaModal()
+    {
+        MostrarEmpresaModal = false;
     }
 
 }
