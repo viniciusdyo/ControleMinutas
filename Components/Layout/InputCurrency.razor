@@ -1,0 +1,46 @@
+@using System.Globalization
+@inherits InputBase<decimal>
+
+<div class="input-group">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="form-label">@Label</label>
+    }
+    <span class="input-group-text">R$</span>
+    <input type="text" @bind="CurrentValueAsString" class="form-control @CssClass"
+           @attributes="AdditionalAttributes" />
+    <ValidationMessage For="@ValueExpression" />
+</div>
+
+@code {
+    [Parameter] 
+    public string? Label { get; set; }
+
+    protected override string FormatValueAsString(decimal value)
+    {
+        return value.ToString("C2", CultureInfo.GetCultureInfo("pt-BR"));
+    }
+
+    protected override bool TryParseValueFromString(string? value, out decimal result, out string validationErrorMessage)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            result = 0;
+            validationErrorMessage = string.Empty;
+            return true;
+        }   
+
+        if (decimal.TryParse(value, NumberStyles.Currency, CultureInfo.GetCultureInfo("pt-BR"), out result))
+        {
+            validationErrorMessage = string.Empty;
+            return true;
+        }
+        else
+        {
+            validationErrorMessage = "Formato de moeda inválido.";
+            return false;
+        }
+
+    }
+
+}

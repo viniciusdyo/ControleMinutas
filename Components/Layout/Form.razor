@@ -1,0 +1,66 @@
+@typeparam TModel
+
+<EditForm Model="Model" OnValidSubmit="@ProcessarSalvamento">
+    <DataAnnotationsValidator />
+
+    <div>        
+        @ChildContent
+    </div>
+
+    <ValidationSummary />
+
+    <div>
+        @if (MostrarBotaoCancelar)
+        {
+            <button class="btn btn-danger" @onclick="AoCancelar">
+                @TextoBotaoCancelar
+            </button>    
+        }
+
+        <button type="submit">
+            if(Carregando)
+            {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span class="sr-only">Carregando...</span>
+            }
+            else
+            {
+                @TextoBotaoSalvar
+            }
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public TModel Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<TModel> OnValidSubmit { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<TModel> AoSalvar { get; set; }
+
+        [Parameter]
+    public EventCallback AoCancelar { get; set; }
+
+    [Parameter]
+    public string? TextoBotaoCancelar { get; set; }
+
+    [Parameter]
+    public string? TextoBotaoSalvar { get; set; }
+
+    [Parameter]
+    public bool MostrarBotaoCancelar { get; set; } = false;
+
+    [Parameter]
+    public bool Carregando { get; set; } = false;
+
+    private async Task ProcessarSalvamento()
+    {
+        await OnValidSubmit.InvokeAsync(Model);
+    }
+}
