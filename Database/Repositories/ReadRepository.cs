@@ -149,4 +149,52 @@ public class ReadRepository<T>(AppDbContext context) : IReadRepository<T> where 
             };
         }
     }
+
+    public async Task<PagedResult<T>> ObterPaginadoAsync(int pagina, int tamanhoPagina, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[] includes)
+    {
+        try
+        {
+            IQueryable<T> query = context.Set<T>();
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            int totalRegistros = await query.CountAsync();
+            int totalPaginas = (int)Math.Ceiling(totalRegistros / (double)tamanhoPagina);
+
+            List<T> entidades = await query.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToListAsync();
+
+            return new PagedResult<T>
+            {
+                Entidades = entidades,
+                TotalRegistros = totalRegistros,
+                TotalPaginas = totalPaginas,
+                PaginaAtual = pagina,
+                TamanhoPagina = tamanhoPagina
+            };
+        }
+        catch (Exception)
+        {
+
+            return new PagedResult<T>
+            {
+                Entidades = null,
+                Success = false,
+                Erros = new List<Erro>
+                {
+                    new Erro($"Ocorreu um erro ao tentar obter os itens.", "500")
+                }
+            };
+        }
+    }
 }
