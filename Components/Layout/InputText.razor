@@ -1,14 +1,15 @@
 @inherits InputBase<string>
 
-<div class="input-group">
+<div class="d-flex flex-column">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="form-label">@Label</label>
     }
-    <input @bind="CurrentValueAsString" class="form-control @CssClass"
-           @attributes="AdditionalAttributes"
-           @oninput="HandleInput" />
-
+    <div class="input-group">
+        <input @bind="CurrentValueAsString" class="form-control @CssClass"
+               @attributes="AdditionalAttributes"
+               @oninput="HandleInput" />
+    </div>
     <div class="invalid-feedback">
         <ValidationMessage For="@ValueExpression" />
     </div>

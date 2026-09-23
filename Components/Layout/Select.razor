@@ -1,0 +1,35 @@
+@typeparam TValue
+@inherits InputSelect<TValue>
+
+<div>
+    @if (string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="form-label">@Label</label>
+    }
+
+    <select class="form-select @CssClass" @onchange="ProcessarMudanca" @attributes="AdditionalAttributes">
+        @ChildContent
+    </select>
+
+    <div class="invalid-feedback">
+        <ValidationMessage For="@ValueExpression" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> AoMudar { get; set; }
+
+    private async Task ProcessarMudanca(ChangeEventArgs e)
+    {
+        CurrentValueAsString = e.Value?.ToString();
+
+        if (AoMudar.HasDelegate)
+        {
+            await AoMudar.InvokeAsync(CurrentValue);
+        }
+    }
+}

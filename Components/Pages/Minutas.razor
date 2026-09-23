@@ -23,6 +23,13 @@
         >
 
             <InputCurrency Label="Valor" @bind-Value="modeloMinuta.Valor" />
+            <SelectRegistration TValue="string" Label="Terminal Saída" AoAdicionarNovoValor="@AdicionarNovoStatus" @bind-Value="modeloMinuta.Status">
+                <option value="">Selecione um status</option>
+                @foreach (var status in StatusOptions)
+                {
+                    <option value="@status">@status</option>
+                }
+            </SelectRegistration>
         </Form>
     </ConteudoCorpo>
     <ConteudoFooter>
@@ -36,6 +43,16 @@
     private bool Carregando { get; set; } = false;
     private bool MostrarBotaoCancelar { get; set; } = true;
 
+    private List<string> StatusOptions { get; set; } = new List<string> { "Status 1", "Status 2", "Status 3" };
+
+    private async Task AdicionarNovoStatus(string novoStatus)
+    {
+        if (!string.IsNullOrWhiteSpace(novoStatus) && !StatusOptions.Contains(novoStatus))
+        {
+            StatusOptions.Add(novoStatus);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 
     private bool MostrarModal { get; set; } = false;
 

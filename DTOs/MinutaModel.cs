@@ -9,4 +9,6 @@ public class MinutaModel
     public int TrabalhoId { get; set; }
     [Required]
     public decimal Valor { get; set; }
+
+    public string Status { get; set; } = string.Empty;
 }

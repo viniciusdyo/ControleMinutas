@@ -1,0 +1,86 @@
+@typeparam TValue
+@inherits InputSelect<TValue>
+
+<div>
+    @if (!string.IsNullOrWhiteSpace(Label))
+    {
+        <label class="form-label">@Label</label>
+    }
+
+    @if (!mostrandoInput)
+    {
+        <div>
+            <div class="input-group">
+                <select class="form-select @CssClass" value="@CurrentValueAsString" @onchange="ProcessarMudanca" @attributes="AdditionalAttributes">
+                    @ChildContent
+                </select>
+                <button type="button" class="btn btn-outline-primary" @onclick="AlternarInputAdicionar">
+                    +
+                </button>
+            </div>
+            <div class="invalid-feedback">
+                <ValidationMessage For="@ValueExpression" />
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="input-group">
+            <input type="text" class="form-control @CssClass" placeholder="Digite um novo valor" @ref="referenciaNovoValor" @bind="novoValorAdicionar" @bind:event="oninput" />
+            <button type="button" class="btn btn-outline-primary" @onclick="AdicionarNovoValor">
+                ✔
+            </button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="AlternarInputAdicionar">
+                ✖
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue> AoMudar { get; set; }
+
+    [Parameter]
+    public EventCallback<string> AoAdicionarNovoValor { get; set; }
+
+    private bool mostrandoInput = false;
+
+    private string? novoValorAdicionar = string.Empty;
+
+    private ElementReference referenciaNovoValor;
+
+    private async Task AlternarInputAdicionar()
+    {
+        mostrandoInput = !mostrandoInput;
+        novoValorAdicionar = string.Empty;
+
+        if (mostrandoInput)
+        {
+            await Task.Delay(100);
+
+            await referenciaNovoValor.FocusAsync();
+        }
+    }
+
+    private async Task AdicionarNovoValor()
+    {
+        if (!string.IsNullOrWhiteSpace(novoValorAdicionar))
+        {
+            await AoAdicionarNovoValor.InvokeAsync(novoValorAdicionar);
+            mostrandoInput = false;
+        }
+    }
+
+    private async Task ProcessarMudanca(ChangeEventArgs e)
+    {
+        CurrentValueAsString = e.Value?.ToString();
+        if (AoMudar.HasDelegate)
+        {
+            await AoMudar.InvokeAsync(CurrentValue);
+        }
+    }
+}

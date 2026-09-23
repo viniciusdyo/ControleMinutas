@@ -3,7 +3,7 @@
 <EditForm Model="Model" OnValidSubmit="@ProcessarSalvamento">
     <DataAnnotationsValidator />
 
-    <div>        
+    <div>
         @ChildContent
     </div>
 
@@ -14,11 +14,11 @@
         {
             <button class="btn btn-danger" @onclick="AoCancelar">
                 @TextoBotaoCancelar
-            </button>    
+            </button>
         }
 
         <button type="submit" class="btn btn-primary">
-            @if(Carregando)
+            @if (Carregando)
             {
                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                 <span class="sr-only">Carregando...</span>
