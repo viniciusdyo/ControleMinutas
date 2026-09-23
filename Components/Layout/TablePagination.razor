@@ -1,0 +1,93 @@
+@typeparam TItem
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                @Cabecalho
+                @if (MostrarAcoes)
+                {
+                    <th>Ações</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (Itens == null || !Itens.Any())
+            {
+                <tr>
+                    <td colspan="100" class="text-center text-muted p-4">Nenhum item encontrado.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Itens)
+                {
+                    <tr>
+                        @Linha(item)
+                        if (MostrarAcoes)
+                        {
+                        <td>
+                            <button class="btn btn-sm btn-primary me-2" title="Editar" @onclick="() => AoEditar.InvokeAsync(item)">✏️</button>
+                            <button class="btn btn-sm btn-danger" title="Excluir" @onclick="() => AoExcluir.InvokeAsync(item)">🗑️</button>
+                        </td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<TItem> Itens { get; set; } = new List<TItem>();
+
+    [Parameter]
+    public RenderFragment Cabecalho { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment<TItem> Linha { get; set; } = default!;
+
+    [Parameter]
+    public bool MostrarAcoes { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<TItem> AoEditar { get; set; }
+
+    [Parameter]
+    public EventCallback<TItem> AoExcluir { get; set; }
+
+    [Parameter]
+    public int PaginaAtual { get; set; }
+
+    [Parameter]
+    public int TotalPaginas { get; set; }
+
+    [Parameter]
+    public EventCallback<int> AoMudarPagina { get; set; }
+
+    private async Task MudarPagina(int pagina)
+    {
+        if (pagina != PaginaAtual)
+        {
+            await AoMudarPagina.InvokeAsync(pagina);
+        }
+    }
+
+    private async Task PaginaAnterior()
+    {
+        if (PaginaAtual > 1)
+        {
+            await AoMudarPagina.InvokeAsync(PaginaAtual - 1);
+        }
+    }
+
+    private async Task ProximaPagina()
+    {
+        if (PaginaAtual < TotalPaginas)
+        {
+            await AoMudarPagina.InvokeAsync(PaginaAtual + 1);
+        }
+    }
+}
