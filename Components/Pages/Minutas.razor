@@ -1,16 +1,41 @@
 ﻿@page "/minutas"
 @using ControleMinutas.DTOs
+@using ControleMinutas.Database
+@using ControleMinutas.Entities
+@using ControleMinutas.Interfaces.Repositories
+
+@inject IWriteRepository<Empresa> EmpresaRepository;
 
 <h3>Minutas</h3>
 
 <button class="btn btn-primary" @onclick="MostrarModalMinutaHandle">
     Abrir Modal
 </button>
+<button class="btn btn-primary" @onclick="MostrarModalEmpresaHandle">
+    Abrir Empresa Modal
+</button>
 
-<Modal Mostrar="@MostrarMinutaModal"
-       AoFechar="@FecharMinutaModal">
+<Modal Mostrar="@MostrarEmpresaModal"
+       AoFechar="@FecharEmpresaModal">
+    <ConteudoCorpo>
+        <Form TModel="EmpresaModel"
+              Model="modeloEmpresa"
+              AoSalvar="@SalvarEmpresa"
+              AoCancelar="@FecharEmpresaModal"
+              Carregando="@CarregandoEmpresa"
+              MostrarBotaoCancelar="true"
+              TextoBotaoCancelar="Cancelar"
+              TextoBotaoSalvar="Salvar">
 
-   
+            <InputTextStandard Label="Nome da Empresa" @bind-Value="modeloEmpresa.Nome" />
+            <InputPercentage Label="Taxa de Abastecimento" @bind-Value="modeloEmpresa.TaxaAbastecimento" />
+            <InputPercentage Label="Taxa de Troca" @bind-Value="modeloEmpresa.TaxaTroca" />
+
+        </Form>
+    </ConteudoCorpo>
+    <ConteudoFooter>
+
+    </ConteudoFooter>
 </Modal>
 
 
@@ -20,10 +45,10 @@
     <ConteudoCorpo>
         <Form TModel="MinutaModel"
               Model="modeloMinuta"
-              AoSalvar="@Salvar"
+              AoSalvar="@SalvarMinuta"
               AoCancelar="@FecharMinutaModal"
-              Carregando="@Carregando"
-              MostrarBotaoCancelar="@MostrarBotaoCancelar"
+              Carregando="@CarregandoMinuta"
+              MostrarBotaoCancelar="true"
               TextoBotaoCancelar="Cancelar"
               TextoBotaoSalvar="Salvar">
 
@@ -45,8 +70,10 @@
 @code {
 
     private MinutaModel modeloMinuta = new MinutaModel();
-    private bool Carregando { get; set; } = false;
-    private bool MostrarBotaoCancelar { get; set; } = true;
+    private EmpresaModel modeloEmpresa = new EmpresaModel();
+
+    private bool CarregandoMinuta { get; set; } = false;
+    private bool CarregandoEmpresa { get; set; } = false;
 
     private List<string> StatusOptions { get; set; } = new List<string> { "Status 1", "Status 2", "Status 3" };
 
@@ -62,11 +89,23 @@
     private bool MostrarMinutaModal { get; set; } = false;
     private bool MostrarEmpresaModal { get; set; } = false;
 
-    private async Task Salvar(MinutaModel model)
+    private async Task SalvarEmpresa(EmpresaModel model)
     {
-        Carregando = true;
+        CarregandoEmpresa = true;
+
+        Empresa empresa = Empresa.CriarEmpresa(model.Nome, model.TaxaAbastecimento, model.TaxaTroca);
+
+        await EmpresaRepository.AddAsync(empresa);
+
+        CarregandoEmpresa = false;
+        FecharEmpresaModal();
+    }
+
+    private async Task SalvarMinuta(MinutaModel model)
+    {
+        CarregandoMinuta = true;
         await Task.Delay(2000);
-        Carregando = false;
+        CarregandoMinuta = false;
         FecharMinutaModal();
     }
 

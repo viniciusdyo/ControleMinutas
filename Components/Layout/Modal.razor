@@ -1,4 +1,4 @@
-@if(Mostrar) 
+@if (Mostrar)
 {
     <div>
         <div class="modal-backdrop fade show"></div>
@@ -12,7 +12,12 @@
                     <div class="modal-body">
                         @ConteudoCorpo
                     </div>
-                    @ConteudoFooter
+                    @if (ConteudoFooter != null)
+                    {
+                        <div class="modal-footer">
+                            @ConteudoFooter
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -22,10 +27,10 @@
 @code {
     [Parameter]
     public bool Mostrar { get; set; }
-    
+
     [Parameter]
     public RenderFragment? ConteudoCorpo { get; set; }
-    
+
     [Parameter]
     public RenderFragment? ConteudoFooter { get; set; }
 

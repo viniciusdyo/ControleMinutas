@@ -1,0 +1,84 @@
+@inherits InputBase<decimal>
+@using System.Globalization
+@using System.Text.RegularExpressions
+
+<div class="d-flex flex-column">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="form-label">@Label</label>
+    }
+
+    <div class="input-group">
+        <input value="@CurrentValueAsString" @oninput="InterceptaDigito" class="form-control @CssClass" type="text" @attributes="AdditionalAttributes" />
+    </div>
+
+    <div class="invalid-feedback">
+        <ValidationMessage For="@ValueExpression" />
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    public string? Label { get; set; }
+
+    private void InterceptaDigito(ChangeEventArgs e)
+    {
+        var texto = e.Value?.ToString() ?? string.Empty;
+
+        texto = Regex.Replace(texto, @"[^\d,]", "");
+
+        if (texto.StartsWith(","))
+        {
+            texto = "0" + texto;
+        }
+
+        int primeiraVirgula = texto.IndexOf(',');
+        if (primeiraVirgula >= 0)
+        {
+            int segundaVirgula = texto.IndexOf(',', primeiraVirgula + 1);
+            if (segundaVirgula >= 0)
+            {
+                texto = texto.Remove(segundaVirgula, 1);
+            }
+        }
+
+        if (decimal.TryParse(texto.Replace(",", "."), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal valor))
+        {
+            CurrentValue = valor / 100;
+        }
+        else
+        {
+            CurrentValue = 0m;
+        }
+
+        CurrentValueAsString = e.Value?.ToString();
+    }
+
+    protected override string FormatValueAsString(decimal value)
+    {
+        return value.ToString("P2", CultureInfo.GetCultureInfo("pt-BR"));
+    }
+
+    protected override bool TryParseValueFromString(string? value, out decimal result, out string validationErrorMessage)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            result = 0m;
+            validationErrorMessage = null!;
+            return true;
+        }
+
+        if (decimal.TryParse(value.Replace("%", "").Trim(), NumberStyles.Number, CultureInfo.GetCultureInfo("pt-BR"), out result))
+        {
+            result /= 100;
+            validationErrorMessage = null!;
+            return true;
+        }
+        else
+        {
+            validationErrorMessage = "Formato de porcentagem inválido.";
+            return false;
+        }
+    }
+}

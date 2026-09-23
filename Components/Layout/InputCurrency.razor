@@ -10,7 +10,9 @@
         <input type="text" @bind="CurrentValueAsString" class="form-control @CssClass"
                @attributes="AdditionalAttributes" />
     </div>
-    <ValidationMessage For="@ValueExpression" />
+    <div class="invalid-feedback">
+        <ValidationMessage For="@ValueExpression" />
+    </div>
 </div>
 
 @code {
