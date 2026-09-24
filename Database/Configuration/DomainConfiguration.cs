@@ -43,13 +43,22 @@ public class MinutaConfiguration : BaseEntityConfiguration<Minuta>
             .HasForeignKey(m => m.TrabalhoId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Property(m => m.Valor)
-             .HasColumnType("TEXT")
-             .IsRequired();
 
         builder.Property(m => m.ValorTotal)
             .HasColumnType("TEXT")
             .IsRequired();
+
+        builder.OwnsOne(m => m.DadosHistoricos, snapshot =>
+        {
+            snapshot.Property(s => s.EmpresaNomeRegistrado).HasColumnName("Empresa");
+            snapshot.Property(s => s.TerminalSaidaRegistrado).HasColumnName("Saida");
+            snapshot.Property(s => s.TerminalEntregaRegistrado).HasColumnName("Entrega");
+            snapshot.Property(s => s.TaxaAbastecimentoAplicada).HasColumnName("TaxaAbastecimento");
+            snapshot.Property(s => s.TaxaTrocaAplicada).HasColumnName("TaxaTroca");
+            snapshot.Property(s => s.ValorTrabalhoAplicado).HasColumnName("Valor").IsRequired();
+        });
+
+        builder.Navigation(m => m.DadosHistoricos).IsRequired();
 
         builder.HasIndex(m => m.Data);
         builder.HasIndex(m => m.Status);

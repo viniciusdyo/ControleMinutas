@@ -19,7 +19,9 @@ namespace ControleMinutas.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Nome = table.Column<string>(type: "TEXT", nullable: false),
                     TaxaAbastecimento = table.Column<decimal>(type: "TEXT", nullable: false),
-                    TaxaTroca = table.Column<decimal>(type: "TEXT", nullable: false)
+                    TaxaTroca = table.Column<decimal>(type: "TEXT", nullable: false),
+                    CriadoEm = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EditadoEm = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,7 +34,9 @@ namespace ControleMinutas.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Nome = table.Column<string>(type: "TEXT", nullable: false)
+                    Nome = table.Column<string>(type: "TEXT", nullable: false),
+                    CriadoEm = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EditadoEm = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +52,9 @@ namespace ControleMinutas.Migrations
                     EmpresaId = table.Column<int>(type: "INTEGER", nullable: false),
                     SaidaId = table.Column<int>(type: "INTEGER", nullable: false),
                     EntregaId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Valor = table.Column<decimal>(type: "TEXT", nullable: false)
+                    Valor = table.Column<decimal>(type: "TEXT", nullable: false),
+                    CriadoEm = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EditadoEm = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,8 +88,15 @@ namespace ControleMinutas.Migrations
                     TrabalhoId = table.Column<int>(type: "INTEGER", nullable: false),
                     Status = table.Column<string>(type: "TEXT", nullable: false),
                     Data = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Empresa = table.Column<string>(type: "TEXT", nullable: false),
+                    Saida = table.Column<string>(type: "TEXT", nullable: false),
+                    Entrega = table.Column<string>(type: "TEXT", nullable: false),
+                    TaxaAbastecimento = table.Column<decimal>(type: "TEXT", nullable: false),
+                    TaxaTroca = table.Column<decimal>(type: "TEXT", nullable: false),
                     Valor = table.Column<decimal>(type: "TEXT", nullable: false),
-                    ValorTotal = table.Column<decimal>(type: "TEXT", nullable: false)
+                    ValorTotal = table.Column<decimal>(type: "TEXT", nullable: false),
+                    CriadoEm = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EditadoEm = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,15 +110,71 @@ namespace ControleMinutas.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Minutas_TrabalhoId_Data_Status",
+                name: "IX_Empresas_CriadoEm",
+                table: "Empresas",
+                column: "CriadoEm");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Empresas_EditadoEm",
+                table: "Empresas",
+                column: "EditadoEm");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Empresas_Nome",
+                table: "Empresas",
+                column: "Nome",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Minutas_CriadoEm",
                 table: "Minutas",
-                columns: new[] { "TrabalhoId", "Data", "Status" });
+                column: "CriadoEm");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Minutas_Data",
+                table: "Minutas",
+                column: "Data");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Minutas_EditadoEm",
+                table: "Minutas",
+                column: "EditadoEm");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Minutas_Status",
+                table: "Minutas",
+                column: "Status");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Minutas_TrabalhoId",
+                table: "Minutas",
+                column: "TrabalhoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Terminais_CriadoEm",
+                table: "Terminais",
+                column: "CriadoEm");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Terminais_EditadoEm",
+                table: "Terminais",
+                column: "EditadoEm");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Terminais_Nome",
                 table: "Terminais",
                 column: "Nome",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Trabalhos_CriadoEm",
+                table: "Trabalhos",
+                column: "CriadoEm");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Trabalhos_EditadoEm",
+                table: "Trabalhos",
+                column: "EditadoEm");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trabalhos_EmpresaId",

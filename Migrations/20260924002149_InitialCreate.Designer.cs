@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControleMinutas.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260923143538_AtualizaModeloDeDominio")]
-    partial class AtualizaModeloDeDominio
+    [Migration("20260924002149_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,9 +75,6 @@ namespace ControleMinutas.Migrations
 
                     b.Property<int>("TrabalhoId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("ValorTotal")
                         .HasColumnType("TEXT");
@@ -170,6 +167,49 @@ namespace ControleMinutas.Migrations
                         .WithMany()
                         .HasForeignKey("TrabalhoId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.OwnsOne("ControleMinutas.Entities.ValueObjects.TrabalhoSnapshot", "DadosHistoricos", b1 =>
+                        {
+                            b1.Property<int>("MinutaId")
+                                .HasColumnType("INTEGER");
+
+                            b1.Property<string>("EmpresaNomeRegistrado")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("Empresa");
+
+                            b1.Property<decimal>("TaxaAbastecimentoAplicada")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("TaxaAbastecimento");
+
+                            b1.Property<decimal>("TaxaTrocaAplicada")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("TaxaTroca");
+
+                            b1.Property<string>("TerminalEntregaRegistrado")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("Entrega");
+
+                            b1.Property<string>("TerminalSaidaRegistrado")
+                                .IsRequired()
+                                .HasColumnType("TEXT")
+                                .HasColumnName("Saida");
+
+                            b1.Property<decimal>("ValorTrabalhoAplicado")
+                                .HasColumnType("TEXT")
+                                .HasColumnName("Valor");
+
+                            b1.HasKey("MinutaId");
+
+                            b1.ToTable("Minutas");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MinutaId");
+                        });
+
+                    b.Navigation("DadosHistoricos")
                         .IsRequired();
 
                     b.Navigation("Trabalho");

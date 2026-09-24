@@ -11,7 +11,7 @@ public class MinutaUseCases(
     IWriteRepository<Minuta> writeRepository
     )
 {
-    public async Task<Result<Minuta>> CriarMinutaAsync(int TrabalhoId, Status status = Status.EmMaos)
+    public async Task<Result<Minuta>> CriarMinutaAsync(int TrabalhoId, StatusMinuta status = StatusMinuta.EmMaos)
     {
         Result<Trabalho> trabalhoResult = await trabalhoReadRepository.ObterPorIdAsync(TrabalhoId, t => t.Empresa!, t => t.Saida!, t => t.Entrega!);
 
@@ -34,7 +34,7 @@ public class MinutaUseCases(
         return await writeRepository.AddAsync(minuta);
     }
 
-    public async Task<Result<Minuta>> AtualizarMinutaAsync(int minutaId, Status status, int trabalhoId)
+    public async Task<Result<Minuta>> AtualizarMinutaAsync(int minutaId, StatusMinuta status, int trabalhoId)
     {
         Result<Minuta> minutaResult = await minutaReadRepository.ObterPorIdAsync(minutaId);
         if (minutaResult.Entidades == null || !minutaResult.Entidades.Any())
@@ -65,7 +65,7 @@ public class MinutaUseCases(
         }
 
         Trabalho trabalho = trabalhoResult.Entidades.First();
-        minuta.AtualizarMinuta(status, trabalho);
+        minuta.AtualizarMinuta(status);
         return await writeRepository.UpdateAsync(minuta);
     }
 
@@ -93,7 +93,7 @@ public class MinutaUseCases(
 
     }
 
-    public async Task<Result<Minuta>> ObterMinutasPorCondicaoAsync(Status? status, DateTime? data, int trabalhoId = 0)
+    public async Task<Result<Minuta>> ObterMinutasPorCondicaoAsync(StatusMinuta? status, DateTime? data, int trabalhoId = 0)
     {
         Expression<Func<Minuta, bool>> predicate = m =>
         (status == null || m.Status == status) &&

@@ -24,9 +24,9 @@ public static class MauiProgram
         builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
 #endif
-        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "ControleMinutas.db");
+        
 
-        builder.Services.AddDbContext<Database.AppDbContext>(options => options.UseSqlite($"Data Source={dbPath}"));
+        builder.Services.AddDbContext<Database.AppDbContext>(options => options.UseSqlite($"Data Source=ControleMinutas.db"));
 
         builder.Services.AddTransient<IReadRepository<Trabalho>, ReadRepository<Trabalho>>();
         builder.Services.AddTransient<IWriteRepository<Trabalho>, WriteRepository<Trabalho>>();
